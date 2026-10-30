@@ -12,7 +12,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -38,6 +42,7 @@ fun ApiFootballScreen(viewModel: ApiFootballViewModel = viewModel()){
     val teams by viewModel.teams.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.error.collectAsState()
+    val favoriteTeamIds by viewModel.favoriteTeamIds.collectAsState()
 
     var expanded by remember { mutableStateOf(false) }
 
@@ -98,6 +103,15 @@ fun ApiFootballScreen(viewModel: ApiFootballViewModel = viewModel()){
                                 Text(wrapper.team.name, style = MaterialTheme.typography.titleMedium)
                                 Text(wrapper.team.country)
                                 Text(wrapper.team.founded?.toString() ?: "")
+                            }
+                            val isFavorite = wrapper.team.id in favoriteTeamIds
+                            IconButton(onClick = { viewModel.toggleFavorite(wrapper.team) }) {
+                                Icon(
+                                    Icons.Default.Favorite,
+                                    contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                                    tint = if (isFavorite) MaterialTheme.colorScheme.error
+                                           else MaterialTheme.colorScheme.outlineVariant
+                                )
                             }
 
                         }
